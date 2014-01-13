@@ -1,0 +1,130 @@
+html,body{
+	margin:0;
+	padding:0;
+	height:100%;
+	font-size:12px;
+	font-family: Arial,sans-serif;
+}
+
+#mainContainer{
+	position:relative;
+	width:100%;
+	height:100%;
+}
+
+#chatWrapper, #chatInnerWrapper{
+	position: absolute;
+	top:0;
+	left:0;right:0;
+	bottom:35px;	
+}
+
+#chatInnerWrapper{
+	position: relative;
+	height:100%;
+}
+
+#chatContainer{
+	position: absolute;
+	top:0;
+	left:0;right:100px;
+	bottom:0;
+}
+
+#chatUsers{
+	position: absolute;
+	top:0;
+	bottom:0;
+	right:0;
+	width:100px;
+	height:100%;
+	background-color: #f8f8f8;
+	border-left:1px solid #eee;
+	box-sizing:border-box;
+	padding:2px 0;
+	box-shadow:inset 1px 0 1px rgba(0,0,0,0.05);
+}
+
+#chatUsers > div{
+	padding:2px 5px;
+	font-size:11px;
+	box-sizing:border-box;
+	color:#888;
+	font-weight:bold;
+
+}
+
+#chatUsers > div:hover{
+	background-color: #fff
+}
+
+#inputContainer{
+	position: absolute;
+	bottom:0;
+	left:0;right:0;
+	height:35px;
+}
+
+#chatInputForm{
+	position: relative;
+	bottom:0;
+	left:0;right:0;
+	height:35px;
+}
+
+#chatInput{
+	height:35px;
+	padding:0;
+	position: absolute;
+	left:0;
+	top:0;
+	right:100px;
+	padding: 0 10px;
+}
+
+#chatInput:focus, #chatSubmit:focus, #chatSubmit:active{
+	outline: 0;
+}
+
+#chatSubmit:active{
+	background-color:#0C3EB3;
+}
+
+#chatSubmit{
+	height:35px;
+	width:100px;
+	position: absolute;
+	top:0;
+	right:0;
+	background-color:#0A45CF;
+	color:#fff;
+}
+
+#chatInput, #chatSubmit{
+	box-sizing:border-box;
+	border:none;
+	border-top:1px solid #ddd;
+	margin:0;
+}
+
+#chatContainer{
+	padding:10px;
+	box-sizing:border-box;
+	overflow: auto;
+}
+
+#chatContainer > div{
+	padding: 2px 0;
+}
+
+#chatContainer > div.sys{
+	font-weight:bold;
+}
+
+#chatContainer > div.admin{
+	color:#4C29D9;
+}
+
+#chatContainer > div.server{
+	color:#39A83D;
+}
