@@ -10,13 +10,14 @@ html,body{
 	position:relative;
 	width:100%;
 	height:100%;
+	background-color:#eee;
 }
 
 #chatWrapper, #chatInnerWrapper{
 	position: absolute;
 	top:0;
-	left:0;right:0;
-	bottom:35px;	
+	left:0;right:130px;
+	bottom:0;	
 }
 
 #chatInnerWrapper{
@@ -27,31 +28,46 @@ html,body{
 #chatContainer{
 	position: absolute;
 	top:0;
-	left:0;right:100px;
+	left:0;right:0;
 	bottom:0;
 }
 
 #chatUsers{
 	position: absolute;
-	top:0;
-	bottom:0;
-	right:0;
-	width:100px;
-	height:100%;
-	background-color: #f8f8f8;
+	top:0px;
+	bottom:0px;
+	right:0px;
+	width:130px;
+	background-color: #fff;
 	border-left:1px solid #eee;
 	box-sizing:border-box;
 	padding:2px 0;
-	box-shadow:inset 1px 0 1px rgba(0,0,0,0.05);
+	border-left:1px solid #ddd;
 }
 
 #chatUsers > div{
-	padding:2px 5px;
-	font-size:11px;
+	padding:2px 8px;
 	box-sizing:border-box;
-	color:#888;
-	font-weight:bold;
+	border-bottom:1px solid #eee;
+}
 
+#chatUsers > div > span.ico{
+	background-image: url("../img/profile_default.png");
+	width:24px;
+	height:24px;
+	background-size: 24px 24px;
+	border-radius:24px;
+	display: inline-block;
+}
+
+#chatUsers > div > span.user{
+	position: relative;
+	top:-6px;
+	left:5px;
+	max-width: 85px;
+	display: inline-block;
+	color:#888;
+	cursor:default;
 }
 
 #chatUsers > div:hover{
@@ -62,24 +78,26 @@ html,body{
 	position: absolute;
 	bottom:0;
 	left:0;right:0;
-	height:35px;
+	height:60px;
 }
 
 #chatInputForm{
 	position: relative;
 	bottom:0;
 	left:0;right:0;
-	height:35px;
+	height:60px;
 }
 
 #chatInput{
-	height:35px;
+	height:40px;
 	padding:0;
 	position: absolute;
-	left:0;
-	top:0;
+	left:10px;
+	top:10px;
 	right:100px;
 	padding: 0 10px;
+	background-color:#d9d9d9;
+	color:#757370;
 }
 
 #chatInput:focus, #chatSubmit:focus, #chatSubmit:active{
@@ -87,24 +105,29 @@ html,body{
 }
 
 #chatSubmit:active{
-	background-color:#0C3EB3;
+	background-color:#2b46bd;
 }
 
 #chatSubmit{
-	height:35px;
-	width:100px;
+	height:40px;
+	width:80px;
 	position: absolute;
-	top:0;
-	right:0;
-	background-color:#0A45CF;
+	top:10px;
+	right:10px;
+	background-color:#3453db;
 	color:#fff;
+	font-weight:bold;
+}
+
+#chatSubmit.disabled{
+	background-color:#617bea;
 }
 
 #chatInput, #chatSubmit{
 	box-sizing:border-box;
 	border:none;
-	border-top:1px solid #ddd;
 	margin:0;
+	border-radius:2px;
 }
 
 #chatContainer{
@@ -114,17 +137,30 @@ html,body{
 }
 
 #chatContainer > div{
-	padding: 2px 0;
+	padding: 10px 8px;
+	margin: 3px 0;
+	border-radius:2px;
+	color:#aaa;
+	box-shadow: 0 1px 0px rgba(0,0,0,0.1);
+
+}
+
+div.log{
+	text-shadow:0 1px 0 #fff;	
+	box-shadow: none !important;
 }
 
 #chatContainer > div.sys{
-	font-weight:bold;
+	background-color:#27ae60;
+	color:#fff;
 }
 
 #chatContainer > div.admin{
-	color:#4C29D9;
+	background-color:#a7accd;
+	color:#fff;
 }
 
 #chatContainer > div.server{
-	color:#39A83D;
+	background-color:#27ae60;
+	color:#fff;
 }

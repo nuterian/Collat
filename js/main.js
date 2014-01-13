@@ -6,10 +6,17 @@ var user_list = document.getElementById("chatUsers");
 
 function addChat(msg, type){
 	type = type || ''
-	var e = document.createElement('div');
-	e.setAttribute("class", type)
-	e.innerHTML = msg;
-	chat.appendChild(e);
+	var prev = chat.lastChild;
+	if(prev && prev.getAttribute("class") == type){
+		prev.appendChild(document.createElement("br"));
+		prev.appendChild(document.createTextNode(msg));
+	}
+	else{
+		var e = document.createElement('div');
+		e.setAttribute("class", type)
+		e.innerHTML = msg;
+		chat.appendChild(e);
+	}
 }
 
 function updateUserList(users){
@@ -22,7 +29,17 @@ function updateUserList(users){
 
 	sorted_list.forEach(function(username){
 		var e = document.createElement('div');
-		e.innerHTML = username;
+
+		var ico = document.createElement('span');
+		ico.setAttribute('class', 'ico');
+
+		var user = document.createElement('span');
+		user.setAttribute('class', 'user');
+		user.innerHTML = username;
+
+		e.appendChild(ico);
+		e.appendChild(user);
+
 		user_list.appendChild(e);
 	});
 }
@@ -43,18 +60,18 @@ chatForm.addEventListener("submit", function(e){
 	if(command){
 		if(command[1] == 'serve' || command[1] == 's'){
 			Server.server.listen(7000);
-			addChat("Server Listening (port: 7000)", "admin");
+			addChat("Server Listening...", "admin");
 		}
 		else if(command[1] == 'connect' || command[1] == 'c'){
 			client = new Client();
 			client.connect('localhost', 7000);
 
 			client.on('connect', function(){
-				addChat("Connecting to Server...");
+				addChat("Connecting to Server...", "log");
 			});
 
 			client.on('connected', function(){
-				addChat("Connected as "+client.name);
+				addChat("Connected as "+client.name, "log");
 			});
 
 			client.on('server', function(msg){
@@ -84,4 +101,4 @@ chatForm.addEventListener("submit", function(e){
 });
 
 
-addChat("Welcome to node chat!", "sys"); 
+addChat("Welcome to <strong>Collat</strong>", "sys"); 
