@@ -140,9 +140,7 @@ html,body{
 	padding: 10px 8px;
 	margin: 3px 0;
 	border-radius:2px;
-	color:#aaa;
-	box-shadow: 0 1px 0px rgba(0,0,0,0.1);
-
+	color:#999;
 }
 
 div.log{
@@ -163,4 +161,72 @@ div.log{
 #chatContainer > div.server{
 	background-color:#27ae60;
 	color:#fff;
+}
+
+#chatContainer  .msg{
+	position:relative;
+	padding:0;
+}
+
+#chatContainer .msg-text{
+	position:absolute;
+	top:0;
+	left:50px;
+	right:0;
+	background-color:#fff;
+	padding:8px;
+	border-radius:2px;
+	line-height:20px;
+	box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+}
+
+#chatContainer .msg-right .msg-text{
+	top:0;
+	right:50px;
+	left:0;
+}
+
+#chatContainer .msg-right .msg-meta{
+	position:absolute;
+	top:0;
+	right:0;
+}
+
+#chatContainer  .msg-user{
+	font-weight:bold;
+	color:#444;
+}
+
+#chatContainer .msg-ico{
+	background-image: url("../img/profile_default.png");
+	width:40px;
+	height:40px;
+	background-size:40px 40px;
+	border-radius:2px;	
+}
+
+#chatContainer .msg-time{
+	font-size:11px;
+	line-height:20px;
+	width:40px;
+	text-align: center;
+	color:#aaa;
+	text-shadow: 0 1px 0 #fff;
+}
+
+.row:before,
+.row:after {
+    content:"";
+    display:table;
+}
+.row:after {
+    clear:both;
+}
+
+.col{
+	float:left;
+}
+
+.row-right .col{
+	float:right;
 }

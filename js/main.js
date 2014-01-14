@@ -4,6 +4,37 @@ var Client = require('client.js');
 var chat = document.getElementById("chatContainer");
 var user_list = document.getElementById("chatUsers");
 
+function createMessage(user, msg, type){
+	var prev = chat.lastChild;
+	if(prev && prev.hasAttribute("data-id") && prev.getAttribute("data-id") == user.id){
+		var body = prev.getElementsByClassName('msg-body')[0];
+		body.appendChild(document.createElement("br"));
+		body.appendChild(document.createTextNode(msg.body));		
+	}
+	else{
+		var msg_node = document.createElement('div');
+		if(type == 'self'){
+			msg_node.setAttribute('class', 'msg msg-right');
+		}
+		else{
+			msg_node.setAttribute('class', 'msg row');
+		}
+		msg_node.setAttribute('data-id', user.id);
+
+		console.log(user);
+		console.log(msg);
+		msg_node.innerHTML = '<div class="msg-text"> \
+								<div class="msg-user">'+user.name+'</div> \
+								<div class="msg-body">'+msg.body+'</div> \
+							</div> \
+							<div class="msg-meta"> \
+								<div class="msg-ico"></div> \
+								<div class="msg-time">'+msg.time+'</div> \
+							</div>';
+		chat.appendChild(msg_node)
+	}
+}
+
 function addChat(msg, type){
 	type = type || ''
 	var prev = chat.lastChild;
@@ -82,7 +113,7 @@ chatForm.addEventListener("submit", function(e){
 					addChat(msg.data + "has joined.", "server");
 				}
 				else if(msg.type == 'user_msg'){
-					addChat(msg.data.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+					createMessage(msg.data.user, msg.data.msg)
 				}
 			});
 
