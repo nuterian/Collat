@@ -14,7 +14,7 @@ function createMessage(user, msg, type){
 	else{
 		var msg_node = document.createElement('div');
 		if(type == 'self'){
-			msg_node.setAttribute('class', 'msg msg-right');
+			msg_node.setAttribute('class', 'msg row row-right');
 		}
 		else{
 			msg_node.setAttribute('class', 'msg row');
@@ -23,11 +23,11 @@ function createMessage(user, msg, type){
 
 		console.log(user);
 		console.log(msg);
-		msg_node.innerHTML = '<div class="msg-text"> \
+		msg_node.innerHTML = '<div class="msg-text col"> \
 								<div class="msg-user">'+user.name+'</div> \
 								<div class="msg-body">'+msg.body+'</div> \
 							</div> \
-							<div class="msg-meta"> \
+							<div class="msg-meta col"> \
 								<div class="msg-ico"></div> \
 								<div class="msg-time">'+msg.time+'</div> \
 							</div>';
@@ -40,7 +40,8 @@ function addChat(msg, type){
 	var prev = chat.lastChild;
 	if(prev && prev.getAttribute("class") == type){
 		prev.appendChild(document.createElement("br"));
-		prev.appendChild(document.createTextNode(msg));
+		prev.innerHTML += msg;
+		//prev.appendChild(document.createTextNode(msg));
 	}
 	else{
 		var e = document.createElement('div');
@@ -105,12 +106,19 @@ chatForm.addEventListener("submit", function(e){
 				addChat("Connected as "+client.name, "log");
 			});
 
+			client.on('disconnect', function(){
+				addChat("Disconnected from server.", "log");
+			});
+
 			client.on('server', function(msg){
 				if(msg.type == 'nick'){
 					addChat("Nick changed from "+ msg.data, "server");
 				}
 				else if(msg.type == 'user_new'){
-					addChat(msg.data + "has joined.", "server");
+					addChat(msg.data + " has joined.", "server");
+				}
+				else if(msg.type == 'user_quit'){
+					addChat('<strong>' + msg.data + '</strong>' + " has left.", "server");
 				}
 				else if(msg.type == 'user_msg'){
 					createMessage(msg.data.user, msg.data.msg)

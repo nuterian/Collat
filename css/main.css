@@ -29,7 +29,7 @@ html,body{
 	position: absolute;
 	top:0;
 	left:0;right:0;
-	bottom:0;
+	bottom:60px;
 }
 
 #chatUsers{
@@ -137,10 +137,10 @@ html,body{
 }
 
 #chatContainer > div{
-	padding: 10px 8px;
-	margin: 3px 0;
+	padding: 8px;
+	margin: 5px 0;
 	border-radius:2px;
-	color:#999;
+	color:#888;
 }
 
 div.log{
@@ -159,20 +159,17 @@ div.log{
 }
 
 #chatContainer > div.server{
-	background-color:#27ae60;
-	color:#fff;
+	background-color:#ddd;
+	color:#888;
 }
 
-#chatContainer  .msg{
+#chatContainer .msg{
 	position:relative;
 	padding:0;
 }
 
 #chatContainer .msg-text{
-	position:absolute;
-	top:0;
-	left:50px;
-	right:0;
+	margin-left:50px;
 	background-color:#fff;
 	padding:8px;
 	border-radius:2px;
@@ -180,17 +177,24 @@ div.log{
 	box-shadow: 0 1px 0 rgba(0,0,0,0.05);
 }
 
-#chatContainer .msg-right .msg-text{
+#chatContainer .row-right .msg-text{
+	margin-left:0px;
+	margin-right:50px;
+}
+
+#chatContainer .msg-meta{
+	position:absolute;
 	top:0;
-	right:50px;
 	left:0;
 }
 
-#chatContainer .msg-right .msg-meta{
+#chatContainer .row-right .msg-meta{
 	position:absolute;
 	top:0;
 	right:0;
+	left:auto;
 }
+
 
 #chatContainer  .msg-user{
 	font-weight:bold;
