@@ -9,19 +9,62 @@
 </head>
 <body>
 	<div id="mainContainer">
-		<div id="chatWrapper">
-			<div id="chatInnerWrapper">
-				<div id="chatContainer"></div>
-				<div id="inputContainer">
-					<form action="#" id="chatInputForm">
-						<input type="text" id="chatInput" />
-						<input type="submit" id="chatSubmit" value="Send" />
-					</form>	
+		
+		<div id="welcomeContainer">
+			<div class="centerWrapper">
+				<div id="welcomeTitle">Collat</div>
+				<div id="welcomeButtons">
+					<input type="button" id="createButton" value="Create"  class="createButton" />
+					<input type="button" id="joinButton" value="Join"  class="joinButton" />
 				</div>
-			</div>			
+			</div>
 		</div>
-		<div id="chatUsers">
 
+		<div id="createContainer" style="display:none">
+			<div class="backButton"></div>
+			<div class="centerWrapper">
+				<input type="text" id="createTopic" class="form-text" placeholder="Enter a Topic" />
+				<input type="submit" value="Create" id="createSubmit" class="createButton" disabled />
+			</div>
+		</div>
+
+		<div id="joinContainer" style="display:none">
+			<div class="backButton"></div>
+			<div id="joinWrapper">
+				<div id="joinTitle">
+				</div>
+				<div id="joinListing">
+				<!--
+					<div class="group-item row">
+						<div class="group-image col"></div>
+						<div class="group-info col">
+							<div class="group-topic">Node.js</div>
+							<div class="group-owner">Jugal</div>
+						</div>
+						<div class="group-users col-right">
+							<strong>8</strong> users
+						</div>
+					</div>
+				-->
+				</div>
+				<input type="submit" value="Join" id="joinSubmit" class="joinButton" disabled />
+			</div>
+		</div>
+
+		<div id="groupContainer" style="display:none">
+			<div id="chatWrapper">
+				<div id="chatInnerWrapper">
+					<div id="chatContainer"></div>
+					<div id="inputContainer">
+						<form action="" id="chatInputForm">
+							<input type="text" id="chatInput" />
+							<input type="submit" id="chatSubmit" value="Send" />
+						</form>	
+					</div>
+				</div>			
+			</div>
+			<div id="chatUsers">
+			</div>
 		</div>
 
 	</div>
