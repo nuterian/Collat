@@ -1,10 +1,25 @@
 var Server = require('server.js'),
 	Client = require('client.js'),
-	Scanner = require('scanner.js');
+	Scanner = require('scanner.js'),
+	gui = require('nw.gui');
+
+var Win = gui.Window.get();
 
 var chat = document.getElementById("chatContainer");
 var user_list = document.getElementById("chatUsers");
 var join_list = document.getElementById("joinListing");
+
+document.getElementById("windowCloseButton").addEventListener("click", function(){
+	Win.close(true);
+});
+
+document.getElementById("toolsButton").addEventListener("click", function(){
+	Win.showDevTools();
+});
+
+window.onload = function(){
+	document.getElementById("titlebar").className = "row title-show";
+}
 
 function createMessage(user, msg, type){
 	var prev = chat.lastChild;
@@ -105,32 +120,35 @@ function hideElement(e){
 	e.setAttribute("style", "display:none");
 }
 
-function showPage(e){
-	hideElement(currPage);
-	showElement(e);
-	currPage = e;
-}
-
 var welcomePage = document.getElementById("welcomeContainer");
 var createPage = document.getElementById("createContainer");
 var joinPage = document.getElementById("joinContainer");
 var chatPage = document.getElementById("groupContainer");
 var listening = false;
+var backButton = document.getElementById("backButton");
+
+function showPage(e){
+	hideElement(currPage);
+	showElement(e);
+	if(e != welcomePage){
+		showElement(backButton);
+	}
+	else{
+		hideElement(backButton);
+	}
+	currPage = e;
+}
+
 
 currPage = welcomePage;
 
-var backButtons = document.getElementsByClassName('backButton');
-
-
-for(var i=0; i<backButtons.length; i++){
-	backButtons[i].addEventListener("click", function(){
-		if(currPage == joinPage){
-			join_list.innerHTML = "";
-			Scanner.stopScan();
-		}
-		showPage(welcomePage);
-	})
-}
+backButton.addEventListener("click", function(){
+	if(currPage == joinPage){
+		join_list.innerHTML = "";
+		Scanner.stopScan();
+	}
+	showPage(welcomePage);
+});
 
 var createButton = document.getElementById("createButton");
 createButton.addEventListener("click", function(){
@@ -215,7 +233,7 @@ document.getElementById("joinButton").addEventListener("click", function(){
 joinSubmit.addEventListener("click", function(){
 	var grp = Scanner.getGroup(selected_group.getAttribute("data-id"));
 	if(!grp) return false;
-	
+
 	client = new Client();
 	client.connect(grp.address, grp.port);
 	showPage(chatPage);

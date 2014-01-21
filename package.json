@@ -1,5 +1,10 @@
 {
 	"name": "node-chat",
-	"main": "index.html"
-
+	"main": "index.html",
+	"window" : {
+		"toolbar" : false,
+		"frame": false,
+		"min_width": 500,
+		"min_height": 400
+	}
 }

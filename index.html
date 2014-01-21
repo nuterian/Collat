@@ -8,20 +8,46 @@
 
 </head>
 <body>
+
+	<div id="titlebar" class="row">
+
+		<div id="backButton" class="button col" style="display:none">
+			<img src="img/back_over.png" class="button-hover" style=""/>
+			<img src="img/back.png" class="button-default"/>
+		</div>
+
+		<div id="titleHead" class="col">
+
+		</div>
+
+		<div id="titleButtons" class="col-right row">
+
+			<div id="toolsButton" class="button col">
+				<img src="img/tools_over.png" class="button-hover" style=""/>
+				<img src="img/tools.png" class="button-default"/>
+			</div>
+
+			<div id="windowCloseButton" class="button col">
+				<img src="img/close_over.png" class="button-hover" style=""/>
+				<img src="img/close.png" class="button-default"/>
+			</div>
+		</div>
+	</div>
+
 	<div id="mainContainer">
 		
 		<div id="welcomeContainer">
 			<div class="centerWrapper">
 				<div id="welcomeTitle">Collat</div>
 				<div id="welcomeButtons">
-					<input type="button" id="createButton" value="Create"  class="createButton" />
-					<input type="button" id="joinButton" value="Join"  class="joinButton" />
+					<input type="button" id="createButton" value="Create Group"  class="createButton" />
+					<input type="button" id="joinButton" value="Join Group"  class="joinButton" />
 				</div>
 			</div>
 		</div>
 
 		<div id="createContainer" style="display:none">
-			<div class="backButton"></div>
+
 			<div class="centerWrapper">
 				<input type="text" id="createTopic" class="form-text" placeholder="Enter a Topic" />
 				<input type="submit" value="Create" id="createSubmit" class="createButton" disabled />
@@ -29,23 +55,12 @@
 		</div>
 
 		<div id="joinContainer" style="display:none">
-			<div class="backButton"></div>
+
 			<div id="joinWrapper">
 				<div id="joinTitle">
 				</div>
 				<div id="joinListing">
-				<!--
-					<div class="group-item row">
-						<div class="group-image col"></div>
-						<div class="group-info col">
-							<div class="group-topic">Node.js</div>
-							<div class="group-owner">Jugal</div>
-						</div>
-						<div class="group-users col-right">
-							<strong>8</strong> users
-						</div>
-					</div>
-				-->
+			
 				</div>
 				<input type="submit" value="Join" id="joinSubmit" class="joinButton" disabled />
 			</div>
@@ -68,6 +83,7 @@
 		</div>
 
 	</div>
+
 	<script src="./js/main.js"></script>
 </body>
 </html>
