@@ -1,21 +1,62 @@
 var Server = require('server.js'),
 	Client = require('client.js'),
 	Scanner = require('scanner.js'),
-	gui = require('nw.gui');
+	gui = require('nw.gui'),
+	Config = require('config.js');
 
 var Win = gui.Window.get();
 
-var chat = document.getElementById("chatContainer");
-var user_list = document.getElementById("chatUsers");
-var join_list = document.getElementById("joinListing");
+var chat = el("chatContainer");
+var user_list = el("chatUsers");
+var group_list = el("groupList");
 
-document.getElementById("windowCloseButton").addEventListener("click", function(){
+el("windowCloseButton").addEventListener("click", function(){
 	Win.close(true);
 });
 
-document.getElementById("toolsButton").addEventListener("click", function(){
+el("toolsButton").addEventListener("click", function(){
 	Win.showDevTools();
 });
+
+var welcomeProfile = el("welcomeProfile");
+var welcomeButtons = el("welcomeButtons");
+var createProfile = el("createProfile");
+var titleProfile = el("titleProfile");
+
+Config.on('err', function(e){
+	console.log('Error: '+ e);
+	return;
+});
+var config_data = Config.read();
+
+
+if(!config_data || !('username' in config_data) || config_data['username'].trim() == ''){
+	// Username not created.
+	// Display Profile create page.
+
+	hideElement(welcomeButtons);
+	showElement(welcomeProfile);
+
+	var createProfileText = document.getElementById("createProfileText");
+	createProfileText.addEventListener("input", function(){
+		if(createProfileText.value.trim() != '')
+			createProfile.disabled = false;
+		else
+			createProfile.disabled = true;
+	});
+
+	createProfile.addEventListener("click", function(){
+		if(!config_data) config_data = {};
+		config_data['username'] = createProfileText.value;
+		Config.write(config_data);
+		hideElement(welcomeProfile);
+		showElement(welcomeButtons);
+		titleProfile.innerHTML = config_data['username'];
+	});
+}
+else{
+	titleProfile.innerHTML = config_data['username'];
+}
 
 window.onload = function(){
 	document.getElementById("titlebar").className = "row title-show";
@@ -69,18 +110,14 @@ function addChat(msg, type){
 }
 
 function addGroup(group){
-	var group_node = document.createElement('div');
-	group_node.setAttribute('class', 'group-item row');
+	var group_node = document.createElement('tr');
 	group_node.setAttribute('data-id', group.id);
-	group_node.innerHTML = '<div class="group-image col"></div> \
-							<div class="group-info col"> \
-								<div class="group-topic">'+group.topic+'</div> \
-								<div class="group-owner"></div> \
-							</div> \
-							<div class="group-users col-right"> \
-								<strong>'+group.users+'</strong> user(s) \
-							</div>';
-	join_list.appendChild(group_node);
+	group_node.setAttribute('style', 'opacity: 0');
+	group_node.innerHTML = 	'<td style="width:60%">'+group.topic+'</td> \
+							<td>20 mins ago</td> \
+							<td>'+group.users+'</td>';
+	group_list.appendChild(group_node);
+	setTimeout(function(){group_node.setAttribute('style', 'opacity: 1')},50);
 	return group_node;
 }
 
@@ -136,6 +173,16 @@ function showPage(e){
 	else{
 		hideElement(backButton);
 	}
+
+	if(currPage == joinPage){
+		group_list.innerHTML = '<tr class="dummy-row"></tr>';
+		clearTimeout(scanTimer);
+		Scanner.stop();
+		joinSubmit.disabled = true;
+	}
+	else if(currPage == chatPage){
+		client.close();
+	}
 	currPage = e;
 }
 
@@ -143,10 +190,6 @@ function showPage(e){
 currPage = welcomePage;
 
 backButton.addEventListener("click", function(){
-	if(currPage == joinPage){
-		join_list.innerHTML = "";
-		Scanner.stopScan();
-	}
 	showPage(welcomePage);
 });
 
@@ -210,24 +253,58 @@ document.getElementById("createSubmit").addEventListener("click", function(e){
 	addChat("Server Listening...", "admin");
 });
 
+
 var joinSubmit = document.getElementById("joinSubmit");
+var refreshButton = document.getElementById("joinRefreshButton");
+var joinLoader = document.getElementById("joinLoader");
+var joinEmpty = document.getElementById("joinEmpty");
+var scanTimer;
+
 var selected_group = null;
-document.getElementById("joinButton").addEventListener("click", function(){
-	
+
+function scanGroups(){
+	hideElement(joinEmpty);
+	showElement(joinLoader);
+
+	refreshButton.disabled = true;
+
 	Scanner.on("new_group", function(group){
 		var new_group = addGroup(group);
 		new_group.addEventListener("click", function(){
 			if(selected_group != new_group){
 				if(selected_group)
-					selected_group.className = "group-item row";
-				new_group.className = "group-item row selected";
+					selected_group.className = '';
+				new_group.className = 'selected';
 				selected_group = new_group;
 				joinSubmit.disabled = false;
 			}
 		});
+
 	});
 	Scanner.scan();
+
+	scanTimer = setTimeout(function(){
+		refreshButton.disabled = false;
+		hideElement(joinLoader);
+		console.log(Scanner.numGroups());
+		if(Scanner.numGroups() == 0){
+			showElement(joinEmpty);
+		}
+		Scanner.stop();
+
+	}, 5000);
+}
+
+
+document.getElementById("joinButton").addEventListener("click", function(){
+	scanGroups();
 	showPage(joinPage);
+});
+
+refreshButton.addEventListener("click", function(){
+	group_list.innerHTML = '<tr class="dummy-row"></tr>';
+	joinSubmit.disabled = true;
+	scanGroups();
 });
 
 joinSubmit.addEventListener("click", function(){

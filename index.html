@@ -20,6 +20,7 @@
 
 		</div>
 
+
 		<div id="titleButtons" class="col-right row">
 
 			<div id="toolsButton" class="button col">
@@ -32,6 +33,11 @@
 				<img src="img/close.png" class="button-default"/>
 			</div>
 		</div>
+
+		<div class="title-sep col-right"></div>
+
+		<div id="titleProfile" class="col-right"></div>
+
 	</div>
 
 	<div id="mainContainer">
@@ -39,9 +45,14 @@
 		<div id="welcomeContainer">
 			<div class="centerWrapper">
 				<div id="welcomeTitle">Collat</div>
+				<div id="welcomeProfile" style="display:none">
+					<input type="text" id="createProfileText" class="form-text" placeholder="Enter a Username" />
+					<input type="submit" value="Create Profile" id="createProfile" class="btn btn-large btn-secondary" disabled />
+				</div>
+
 				<div id="welcomeButtons">
-					<input type="button" id="createButton" value="Create Group"  class="createButton" />
-					<input type="button" id="joinButton" value="Join Group"  class="joinButton" />
+					<input type="button" id="createButton" value="Create Group"  class="btn btn-large btn-secondary" />
+					<input type="button" id="joinButton" value="Join Group"  class="btn btn-large btn-primary" />
 				</div>
 			</div>
 		</div>
@@ -50,19 +61,56 @@
 
 			<div class="centerWrapper">
 				<input type="text" id="createTopic" class="form-text" placeholder="Enter a Topic" />
-				<input type="submit" value="Create" id="createSubmit" class="createButton" disabled />
+				<input type="submit" value="Create" id="createSubmit" class="btn btn-large btn-secondary" disabled />
 			</div>
 		</div>
 
 		<div id="joinContainer" style="display:none">
 
 			<div id="joinWrapper">
-				<div id="joinTitle">
+				<div id="joinHeader" class="row">
+					<div class="col">
+						<button id="joinRefreshButton" class="btn" disabled><img src="img/refresh.png" alt=""></button>
+					</div>
+					<!--
+					<div id="joinCount" class="col">
+						<strong>25</strong> Groups found
+					</div>
+					-->
+
+					<div class="col-right">
+						<input type="submit" value="Join" id="joinSubmit" class="btn btn-primary" disabled />
+					</div>
 				</div>
-				<div id="joinListing">
-			
-				</div>
-				<input type="submit" value="Join" id="joinSubmit" class="joinButton" disabled />
+
+				<table id="groupsTableHead">	
+					<thead>
+						<tr>
+							<th style="width:60%">Topic</th>
+							<th>Created</th>
+							<th>Users</th>
+						</tr>
+					</thead>
+				</table>
+
+				<table id="groupsTable">
+					<tbody id="groupList">
+						<tr class="dummy-row"></tr>
+					</tbody>
+				</table>
+				
+				<div id="joinLoaderWrapper">
+					<div id="joinLoader" class="bubblingG">
+						<span id="bubblingG_1">
+						</span>
+						<span id="bubblingG_2">
+						</span>
+						<span id="bubblingG_3">
+						</span>
+					</div>
+					<div id="joinEmpty">No Groups found</div>
+				</div> 
+
 			</div>
 		</div>
 
@@ -84,6 +132,7 @@
 
 	</div>
 
+	<script src="./js/util.js"></script>
 	<script src="./js/main.js"></script>
 </body>
 </html>
