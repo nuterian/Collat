@@ -37,7 +37,7 @@ if(!config_data || !('username' in config_data) || config_data['username'].trim(
 	hideElement(welcomeButtons);
 	showElement(welcomeProfile);
 
-	var createProfileText = document.getElementById("createProfileText");
+	var createProfileText = el("createProfileText");
 	createProfileText.addEventListener("input", function(){
 		if(createProfileText.value.trim() != '')
 			createProfile.disabled = false;
@@ -79,8 +79,6 @@ function createMessage(user, msg, type){
 		}
 		msg_node.setAttribute('data-id', user.id);
 
-		console.log(user);
-		console.log(msg);
 		msg_node.innerHTML = '<div class="msg-text col"> \
 								<div class="msg-user">'+user.name+'</div> \
 								<div class="msg-body">'+msg.body+'</div> \
@@ -89,8 +87,10 @@ function createMessage(user, msg, type){
 								<div class="msg-ico"></div> \
 								<div class="msg-time">'+msg.time+'</div> \
 							</div>';
-		chat.appendChild(msg_node)
+		chat.appendChild(msg_node);
 	}
+	console.log(chat.scrollHeight);
+	chat.scrollTop = chat.scrollHeight;
 }
 
 function addChat(msg, type){
