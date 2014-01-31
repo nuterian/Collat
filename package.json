@@ -2,7 +2,7 @@
 	"name": "node-chat",
 	"main": "index.html",
 	"window" : {
-		"toolbar" : false,
+		"toolbar" : true,
 		"frame": false,
 		"min_width": 500,
 		"min_height": 400
