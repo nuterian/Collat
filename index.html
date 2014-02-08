@@ -11,9 +11,12 @@
 
 	<div id="titlebar" class="row">
 
-		<div id="backButton" class="button col" style="display:none">
-			<img src="img/back_over.png" class="button-hover" style=""/>
-			<img src="img/back.png" class="button-default"/>
+		<div id="backContainer" style="display:none">
+			<div id="backButton" class="button col">
+				<img src="img/back_over.png" class="button-hover" style=""/>
+				<img src="img/back.png" class="button-default"/>
+			</div>
+
 		</div>
 <!--
 		<div id="titleTabs" class="col row">
@@ -22,7 +25,17 @@
 		</div>
 -->
 
-		<div id="titleHead" class="col">
+		<div id="titleHead" class="col row" >
+			<div id="groupPulse" class="gps_ring col"></div>
+			<div id="groupName" class="col">Node.js</div>
+			<div class="ico-down col-right"></div>
+
+			<div id="groupInfo" class="drop-menu">
+				<div class="drop-menu-item row" style="background-color:#d3536a;color:#ffe6ea">
+					<div class="ico-close col"></div>
+					<div class="col">Close</div>
+				</div>
+			</div>
 		</div>
 
 
@@ -120,6 +133,7 @@
 		</div>
 
 		<div id="groupContainer" style="display:none">
+			<!--<div id="groupMeta"></div>-->
 			<div id="chatWrapper">
 				<div id="chatInnerWrapper">
 					<div id="chatContainer"></div>

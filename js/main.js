@@ -162,16 +162,19 @@ var welcomePage = el("welcomeContainer");
 var createPage = el("createContainer");
 var joinPage = el("joinContainer");
 var chatPage = el("groupContainer");
+var backContainer = el("backContainer");
 var backButton = el("backButton");
+var groupNameTitle = el("groupName");
+var groupName = '';
 
 function showPage(e){
 	hideElement(currPage);
 	showElement(e);
 	if(e != welcomePage){
-		showElement(backButton);
+		showElement(backContainer);
 	}
 	else{
-		hideElement(backButton);
+		hideElement(backContainer);
 	}
 
 	if(currPage == joinPage){
@@ -184,6 +187,12 @@ function showPage(e){
 		client.close();
 	}
 	currPage = e;
+
+	if(currPage == chatPage){
+		hideElement(backContainer);
+		groupNameTitle.innerHTML = groupName;
+		showElement(titleHead);
+	}
 }
 
 
@@ -253,8 +262,8 @@ el("createSubmit").addEventListener("click", function(e){
 	Server.setOwner({name:client.name});
 	Scanner.broadcast(Server);
 	*/
-
-	client = Server.start(el('createTopic').value, config_data['username']);
+	groupName = el('createTopic').value;
+	client = Server.start(groupName, config_data['username']);
 	showPage(chatPage);
 	addChat("Server Listening...", "admin");
 });
@@ -317,6 +326,8 @@ joinSubmit.addEventListener("click", function(){
 	var grp = Scanner.getGroup(selected_group.getAttribute("data-id"));
 	if(!grp) return false;
 
+	groupName = grp.topic;
+
 	client = new Client();
 	client.name = config_data['username'];
 	client.connect(grp.address, grp.port);
@@ -357,6 +368,3 @@ chatForm.addEventListener("submit", function(e){
 	}
 
 });
-
-
-addChat("Welcome to <strong>Collat</strong>", "sys"); 

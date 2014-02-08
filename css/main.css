@@ -4,6 +4,7 @@ html,body{
 	height:100%;
 	font-size:12px;
 	font-family: "Source Sans Pro",sans-serif;
+	-webkit-user-select: none;
 }
 
 #titlebar{
@@ -17,23 +18,103 @@ html,body{
 	height:40px;
 	line-height:40px;
 	-webkit-app-region: drag;
+	padding: 0 12px;
 }
 
-#titleHead{
-	text-transform:uppercase;
+#titleHead, #titleProfile{
 	font-size:14px;
-	font-weight:bold;
-	text-shadow: 0 1px 1px rgba(255,255,255,0.3);
-	color:#636b85;
-	margin-left:15px;
+	margin: 0 12px;
 }
 
 #titleProfile{
-	color:#fff;
-	font-size:14px;
-	margin: 0 10px;
-	text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+	color:#c7d1ec;
+	font-family: "Source Sans Pro",sans-serif;
+}
 
+#titleHead{
+	color:#fff;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+	margin-left:0;
+	border:1px solid #6e7a9b;
+	line-height:24px;
+	margin: 6px 12px 8px 0;
+	padding: 0 8px;
+	border-radius:3px;
+	font-size:12px;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+	background:#8e99bc;
+	background-image: -webkit-linear-gradient(top, #b4bdd6 0%, #8e99bc 100%);
+	background-repeat:no-repeat;
+	-webkit-transition: 0.1s linear;
+	-webkit-app-region: no-drag;
+	width:150px;
+	position:relative;
+	z-index:2000;
+}
+#groupName{
+	max-width:110px;
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	cursor: default
+}
+
+.drop-menu{
+	background-color:#fff;
+	position:absolute;
+	left:0;
+	width:100%;
+	z-index:-5;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	box-sizing:border-box;
+	border-bottom-left-radius:3px;
+	border-bottom-right-radius:3px;
+	text-shadow: none;
+	opacity:0;
+}
+
+.drop-menu-item{
+	padding:10px 10px;
+	color:#444;
+	line-height:16px;
+
+	text-transform:uppercase;
+}
+
+.drop-menu-item:last-child{
+	border-bottom-left-radius:3px;
+	border-bottom-right-radius:3px;	
+}
+
+.ico-close{
+	width:16px;height:16px;
+	background-image:url("../img/close_white.png");
+	margin-right:10px;
+}
+
+#groupInfo{
+	top:20px;
+	-webkit-transition: 0.15s linear;
+}
+
+#titleHead:hover #groupInfo{
+	opacity:1;
+	top:25px;
+}
+
+#titleHead:hover{
+	background-position: 0 -10px;
+}
+
+.ico-down{
+	width:8px;
+	height:6px;
+	background-image:url("../img/arrow_down.png");
+	margin:10px 0 0;
+}
+
+#groupPulse{
+	margin:5px 5px 0 0;
 }
 /*
 #titleTabs{
@@ -75,19 +156,19 @@ html,body{
 background-image: url("../img/title_divider.png");
 width:2px;
 height:22px;
-margin:18px 10px 0;
+margin:17px 0 0;
 }
 
 
 #titleButtons{
-	margin:13px 8px 0 0;
+	margin:13px 0 0;
 }
 
 
 #titleButtons .button{
 	width:16px;
 	height:16px;
-	margin: 0 8px;
+	margin: 0 0 0 12px;
 	-webkit-app-region: no-drag;
 }
 
@@ -369,12 +450,20 @@ margin:18px 10px 0;
 
 #chatWrapper, #chatInnerWrapper{
 	position: absolute;
-	top:0;
+	top:0px;
 	left:0;right:130px;
 	bottom:0;	
 }
 
+#groupMeta{
+	position:absolute;
+	top:0;left:0;right:0;
+	background-color:#747f9e;
+	height:30px;
+}
+
 #chatInnerWrapper{
+	top:0;
 	position: relative;
 	height:100%;
 }
@@ -388,7 +477,7 @@ margin:18px 10px 0;
 
 #chatUsers{
 	position: absolute;
-	top:0px;
+	top:0px;;
 	bottom:0px;
 	right:0px;
 	width:130px;
@@ -417,8 +506,7 @@ margin:18px 10px 0;
 #backButton{
 	width:16px;
 	height:16px;
-	margin-top:13px;
-	margin-left:15px;
+	margin: 13px 12px 0 0;
 	-webkit-app-region: no-drag;
 }
 
@@ -480,8 +568,11 @@ margin:18px 10px 0;
 	position: absolute;
 	top:10px;
 	right:10px;
-	background-color:#3453db;
+	background-color:#FCCD1B;
+	background-image: -webkit-linear-gradient(top, #FCCD1B 0%, #ffc11b 100%);
 	color:#fff;
+	border:2px solid #f09609;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
 	font-weight:bold;
 }
 
@@ -643,6 +734,21 @@ background-color:#d5d9e4;
 
 }
 
+
+.gps_ring {
+    background-color: #40D3B7;
+    -webkit-border-radius: 30px;
+    height: 12px;
+    width: 12px;
+    -webkit-animation: pulsate 1s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.0
+}
+@-webkit-keyframes pulsate {
+    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+    50% {opacity: 1.0;}
+    100% {-webkit-transform: scale(1, 1); opacity: 0.0;}
+}
 
 .row:before,
 .row:after {
