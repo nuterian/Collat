@@ -88,7 +88,7 @@ var View = Class.extend({
 	init: function(options){
 		options || (options = {});
 		_extend(this, options);
-		this.el = _el(this.id);
+		if(!this.el) this.el = _el(this.id);
 		this.bind();
 	},
 
@@ -106,7 +106,7 @@ var View = Class.extend({
     		var method = this.events[key];
 	        if (!_isFunction(method)) method = this[this.events[key]];
 	        if (!method) continue;
-
+	        method = method.bind(this);
 	        var match = key.match(eventSplitter);
 	        var eventName = match[1], selector = match[2];
 	        if (selector === '') {

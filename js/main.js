@@ -112,7 +112,7 @@ function addChat(msg, type){
 	}
 	chat.scrollTop = chat.scrollHeight;
 }
-
+/*
 function addGroup(group){
 	var group_node = document.createElement('tr');
 	group_node.setAttribute('data-id', group.id);
@@ -123,7 +123,7 @@ function addGroup(group){
 	group_list.appendChild(group_node);
 	setTimeout(function(){group_node.setAttribute('style', 'opacity: 1')},50);
 	return group_node;
-}
+}*/
 
 function updateUserList(users){
 	user_list.innerHTML = '';
@@ -164,11 +164,6 @@ function hideElement(e){
 }
 
 
-
-var welcomePage = _el("welcomeContainer");
-var createPage = _el("createContainer");
-var joinPage = _el("joinContainer");
-var chatPage = _el("groupContainer");
 var backContainer = _el("backContainer");
 var backButton = _el("backButton");
 var groupNameTitle = _el("groupName");
@@ -226,6 +221,102 @@ TitleBar = new (View.extend({
 	}
 }))();
 
+JoinPage = new (View.extend({
+	id: 'joinContainer',
+
+	events: {
+		'click #joinRefreshButton': 'scan',
+		'click #joinSubmit': 'join'
+	},
+
+	init: function(){
+		this._super();
+		this.refreshButton = this.el.find('#joinRefreshButton');
+		this.joinButton = this.el.find('#joinSubmit');
+		this.loader = this.el.find('#joinLoader');
+		this.noneFound = this.el.find('#joinEmpty');
+
+		this.groupList = new (View.extend({
+			id: 'groupList',
+			init: function(){
+				this._super();
+				this.selected = null;
+			},
+			clear: function() { 
+				this.el.innerHTML = '<tr class="dummy-row"></tr>';
+			},
+			add: function(group){
+				var newGroup = document.createElement('tr');
+				newGroup.setAttribute('data-id', group.id);
+				newGroup.style.opacity = 0;
+				newGroup.innerHTML = 	'<td style="width:60%">'+group.topic+'</td> \
+										<td>20 mins ago</td> \
+										<td>'+group.users+'</td>';
+				this.el.appendChild(newGroup);
+				setTimeout(function(){ newGroup.style.opacity = 1 },10);
+				newGroup.on("click", function(){
+					if(this.selected != newGroup){
+						if(this.selected) this.selected.className = '';
+						this.selected = newGroup;
+						this.selected.className = 'selected';
+						joinSubmit.disabled = false;
+					}
+				}.bind(this));				
+			}
+		}))();
+	},
+
+	render: function(){
+		this.groupList.clear();
+		joinSubmit.disabled = true;
+	},
+	post_render:function(){
+		clearTimeout(this.scanTimer);
+		Scanner.stop();
+	},
+
+	scan: function(){
+		Scanner.groups = {};
+		this.groupList.clear();
+		this.joinButton.disabled = true;
+
+		this.noneFound.hide();
+		this.loader.show();
+
+		this.refreshButton.disabled = true;
+		var self = this;
+		Scanner.on("new_group", function(group){ self.groupList.add(group) });
+		Scanner.scan();
+
+		/* Scan for 5 seconds */
+		this.scanTimer = setTimeout(function(){
+			self.refreshButton.disabled = false;
+			self.loader.hide();
+
+			if(!Object.keys(Scanner.groups).length) self.noneFound.show();
+			Scanner.stop();
+		}, 5000);
+	},
+
+	join: function(){
+		//console.log('clicked');
+		clearTimeout(this.scanTimer);
+		Scanner.stop();
+
+		
+		var grp = Scanner.groups[this.groupList.selected.getAttribute("data-id")];
+		if(!grp) return false;
+
+		groupName = grp.topic;
+
+		client = new Client();
+		client.name = config_data['username'];
+		client.connect(grp.address, grp.port);
+		PageManager.show('group');
+
+	}
+}))();
+
 
 PageManager = new (View.extend({
 	id: 'mainContainer',
@@ -245,17 +336,7 @@ PageManager = new (View.extend({
 
 		this.create = new View({id: 'createContainer'});
 
-		this.join = new View({
-			id: 'joinContainer',
-			render: function(){
-				group_list.innerHTML = '<tr class="dummy-row"></tr>';
-				joinSubmit.disabled = true;
-			},
-			post_render:function(){
-				clearTimeout(scanTimer);
-				Scanner.stop();
-			}
-		});
+		this.join = JoinPage;
 
 		this.group = new View({
 			id: 'groupContainer',
@@ -347,19 +428,19 @@ _el("createSubmit").addEventListener("click", function(e){
 	*/
 	groupName = _el('createTopic').value;
 	client = Server.start(groupName, config_data['username']);
-	PageManager.show('chat');
+	PageManager.show('group');
 	addChat("Server Listening...", "admin");
 });
 
-
+/*
 var joinSubmit = _el("joinSubmit");
 var refreshButton = _el("joinRefreshButton");
 var joinLoader = _el("joinLoader");
 var joinEmpty = _el("joinEmpty");
 var scanTimer;
-
-var selected_group = null;
-
+*/
+var J = null;
+/*
 function scanGroups(){
 	hideElement(joinEmpty);
 	showElement(joinLoader);
@@ -367,17 +448,7 @@ function scanGroups(){
 	refreshButton.disabled = true;
 
 	Scanner.on("new_group", function(group){
-		var new_group = addGroup(group);
-		new_group.addEventListener("click", function(){
-			if(selected_group != new_group){
-				if(selected_group)
-					selected_group.className = '';
-				new_group.className = 'selected';
-				selected_group = new_group;
-				joinSubmit.disabled = false;
-			}
-		});
-
+		JoinPage.groupList.add(group)
 	});
 	Scanner.scan();
 
@@ -392,21 +463,22 @@ function scanGroups(){
 
 	}, 5000);
 }
-
+*/
 
 document.getElementById("joinButton").addEventListener("click", function(){
-	scanGroups();
+	JoinPage.scan();
 	PageManager.show('join');
 });
-
+/*
 refreshButton.addEventListener("click", function(){
-	group_list.innerHTML = '<tr class="dummy-row"></tr>';
+	JoinPage.groupList.clear();
 	joinSubmit.disabled = true;
 	scanGroups();
 });
-
+*/
+/*
 joinSubmit.addEventListener("click", function(){
-	var grp = Scanner.getGroup(selected_group.getAttribute("data-id"));
+	var grp = Scanner.getGroup(JoinPage.groupList.selected.getAttribute("data-id"));
 	if(!grp) return false;
 
 	groupName = grp.topic;
@@ -414,8 +486,9 @@ joinSubmit.addEventListener("click", function(){
 	client = new Client();
 	client.name = config_data['username'];
 	client.connect(grp.address, grp.port);
-	PageManager.show('chat');
+	PageManager.show('group');
 });
+*/
 
 
 var chatForm = document.forms[0];
