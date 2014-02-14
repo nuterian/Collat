@@ -21,7 +21,7 @@ html,body{
 	padding: 0 12px;
 }
 
-#titleHead, #titleProfile{
+#groupTab, #titleProfile{
 	font-size:14px;
 	margin: 0 12px;
 }
@@ -31,7 +31,7 @@ html,body{
 	font-family: "Source Sans Pro",sans-serif;
 }
 
-#titleHead{
+#groupTab{
 	color:#fff;
 	text-shadow: 0 1px 1px rgba(0,0,0,0.3);
 	margin-left:0;
@@ -64,7 +64,6 @@ html,body{
 	position:absolute;
 	left:0;
 	width:100%;
-	z-index:-5;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 	box-sizing:border-box;
 	border-bottom-left-radius:3px;
@@ -76,9 +75,7 @@ html,body{
 .drop-menu-item{
 	padding:10px 10px;
 	color:#444;
-	line-height:16px;
-
-	text-transform:uppercase;
+	line-height:10px;
 }
 
 .drop-menu-item:last-child{
@@ -87,14 +84,20 @@ html,body{
 }
 
 .ico-close{
-	width:16px;height:16px;
+	width:10px;height:10px;
 	background-image:url("../img/close_white.png");
-	margin-right:10px;
+	margin: 7px 0 0;
+	opacity:0.6;
+}
+
+.ico-close:hover{
+	opacity:1;
 }
 
 #groupInfo{
 	top:20px;
 	-webkit-transition: 0.15s linear;
+	z-index:-5;
 }
 
 #titleHead:hover #groupInfo{
@@ -102,9 +105,6 @@ html,body{
 	top:25px;
 }
 
-#titleHead:hover{
-	background-position: 0 -10px;
-}
 
 .ico-down{
 	width:8px;
