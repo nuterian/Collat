@@ -25,10 +25,10 @@
 		</div>
 -->
 
-		<div id="groupTab" class="col row" style="display:none">
-			<div id="groupPulse" class="gps_ring col"></div>
-			<div id="groupName" class="col">Node.js</div>
-			<div id="groupTabClose" class="ico-close col-right"></div>
+		<div id="groupTab" class="col" style="display:none">
+			<!--<div id="groupPulse" class="gps_ring col"></div>-->
+			<div id="groupName" >Node.js</div>
+			<div id="groupTabClose" class="ico-close"></div>
 		</div>
 
 
@@ -53,7 +53,7 @@
 
 	<div id="mainContainer">
 		
-		<div id="welcomeContainer">
+		<div id="welcomeContainer" style="">
 			<div class="centerWrapper">
 				<div id="welcomeTitle">Collat</div>
 				<div id="welcomeProfile" style="display:none">
@@ -71,8 +71,11 @@
 		<div id="createContainer" style="display:none">
 
 			<div class="centerWrapper">
-				<input type="text" id="createTopic" class="form-text" placeholder="Enter a Topic" />
+				<div><input type="text" id="createName" class="form-text" placeholder="Enter a Name" /></div>
+				<div><input type="text" id="createTopic" class="form-text" placeholder="Enter a Topic (optional)" /></div>
+				<div style="width:345px; margin:0 auto; text-align:right">
 				<input type="submit" value="Create" id="createSubmit" class="btn btn-large btn-secondary" disabled />
+				</div>
 			</div>
 		</div>
 
@@ -94,19 +97,19 @@
 					</div>
 				</div>
 
-				<table id="groupsTableHead">	
+
+
+				<table id="groupsTable">
 					<thead>
 						<tr>
-							<th style="width:60%">Topic</th>
+							<th style="width:40%">Name</th>
+							<th>Topic</th>
 							<th>Created</th>
 							<th>Users</th>
 						</tr>
 					</thead>
-				</table>
-
-				<table id="groupsTable">
 					<tbody id="groupList">
-						<tr class="dummy-row"></tr>
+
 					</tbody>
 				</table>
 				
@@ -126,15 +129,28 @@
 		</div>
 
 		<div id="groupContainer" style="display:none">
-			<!--<div id="groupMeta"></div>-->
+			<div id="groupMeta" class="row">
+				<div class="ico-group-topic col"></div>
+				<div id="groupTopic" class="col">Externalize the CA certificates.</div>
+
+				<button id="groupOptions" class="group-meta-btn col-right">
+					<div class="ico-group-options"></div>
+				</button>
+
+				<div id="groupUserCount" class="col-right"></div>
+
+				<div class="ico-user-count col-right"></div>
+
+			</div>
 			<div id="chatWrapper">
 				<div id="chatInnerWrapper">
-					<div id="chatContainer"></div>
+					<div id="chatContainer">
+					</div>
 					<div id="inputContainer">
-						<form action="" id="chatInputForm">
+						<div id="chatInputForm">
 							<input type="text" id="chatInput" />
-							<input type="submit" id="chatSubmit" value="Send" />
-						</form>	
+							<input type="button" id="chatSubmit" value="Send" />
+						</div>	
 					</div>
 				</div>			
 			</div>

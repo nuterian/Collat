@@ -106,51 +106,42 @@ var View = Class.extend({
     		var method = this.events[key];
 	        if (!_isFunction(method)) method = this[this.events[key]];
 	        if (!method) continue;
-	        method = method.bind(this);
+            method = method.bind(this);
 	        var match = key.match(eventSplitter);
 	        var eventName = match[1], selector = match[2];
 	        if (selector === '') {
-	          this.el.on(eventName, method);
+	            this.el.on(eventName, method);
 	        } else {
-	          this.el.querySelector(selector).on(eventName, method);
+                this.el.querySelector(selector).on(eventName, method);
 	        }
     	}
     }
 });
 
-/*
-var View = function(id) {
+function timeSince(date) {
 
-	var self = this;
+    var seconds = Math.floor((new Date() - date) / 1000);
 
-	this.id = id;
-  	this.el = _el(this.id);
-  	this.events = {};
-    
-    this.pre_render = function(){}
-    this.post_render = function(){}
+    var interval = Math.floor(seconds / 31536000);
 
-    this.show = function(){ self.pre_render(); self.el.show() }
-    this.hide = function(){ self.el.hide(); self.post_render(); }
-    
-    this.on = self.el.on
-    this.off = self.el.off
-
-    this.bind = function(){
-    	var eventSplitter = /^(\S+)\s*(.*)$/;
-    	for(var key in self.events){
-    		var method = self.events[key];
-	        if (!_isFunction(method)) method = this[self.events[key]];
-	        if (!method) continue;
-
-	        var match = key.match(eventSplitter);
-	        var eventName = match[1], selector = match[2];
-	        if (selector === '') {
-	          this.el.on(eventName, method);
-	        } else {
-	          this.el.querySelector(selector).on(eventName, method);
-	        }
-    	}
+    if (interval > 1) {
+        return interval + " years";
     }
-};
-*/
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+        return interval + " months";
+    }
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+        return interval + " days";
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        return interval + " hours";
+    }
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        return interval + " minutes";
+    }
+    return Math.floor(seconds) + " seconds";
+}

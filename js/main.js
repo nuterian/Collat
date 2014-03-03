@@ -9,18 +9,6 @@ var Win = gui.Window.get();
 //titleBar = new TitleBar();
 
 
-var chat = _el("chatContainer");
-var user_list = _el("chatUsers");
-var group_list = _el("groupList");
-
-_el("windowCloseButton").addEventListener("click", function(){
-	Win.close(true);
-});
-
-_el("toolsButton").addEventListener("click", function(){
-	Win.showDevTools();
-});
-
 var welcomeProfile = _el("welcomeProfile");
 var welcomeButtons = _el("welcomeButtons");
 var createProfile = _el("createProfile");
@@ -30,185 +18,20 @@ Config.on('err', function(e){
 	console.log('Error: '+ e);
 	return;
 });
-var config_data = Config.read();
+var _config = Config.read();
+onload = function() {  Win.show(); }
 
 
-if(!config_data || !('username' in config_data) || config_data['username'].trim() == ''){
-	// Username not created.
-	// Display Profile create page.
 
-	hideElement(welcomeButtons);
-	showElement(welcomeProfile);
-
-	var createProfileText = _el("createProfileText");
-	createProfileText.addEventListener("input", function(){
-		if(createProfileText.value.trim() != '')
-			createProfile.disabled = false;
-		else
-			createProfile.disabled = true;
-	});
-
-	createProfile.addEventListener("click", function(){
-		if(!config_data) config_data = {};
-		config_data['username'] = createProfileText.value.trim();
-		Config.write(config_data);
-		hideElement(welcomeProfile);
-		showElement(welcomeButtons);
-		titleProfile.innerHTML = config_data['username'];
-	});
-
-}
-else{
-	titleProfile.innerHTML = config_data['username'];
-}
-
-window.onload = function(){
-	document.getElementById("titlebar").className = "row title-show";
-}
-
-function createMessage(user, msg, type){
-	var prev = chat.lastChild;
-	if(prev && prev.hasAttribute("data-id") && prev.getAttribute("data-id") == user.id){
-		var body = prev.getElementsByClassName('msg-body')[0];
-		body.appendChild(document.createElement("br"));
-		body.appendChild(document.createTextNode(msg.body));		
-	}
-	else{
-		var msg_node = document.createElement('div');
-		if(type == 'self'){
-			msg_node.setAttribute('class', 'msg row row-right');
-		}
-		else{
-			msg_node.setAttribute('class', 'msg row');
-		}
-		msg_node.setAttribute('data-id', user.id);
-
-		msg_node.innerHTML = '<div class="msg-text col"> \
-								<div class="msg-user">'+user.name+'</div> \
-								<div class="msg-body">'+msg.body+'</div> \
-							</div> \
-							<div class="msg-meta col"> \
-								<div class="msg-ico"></div> \
-								<div class="msg-time">'+msg.time+'</div> \
-							</div>';
-		chat.appendChild(msg_node);
-	}
-	chat.scrollTop = chat.scrollHeight;
-}
-
-function addChat(msg, type){
-	type = type || ''
-	var prev = chat.lastChild;
-	if(prev && prev.getAttribute("class") == type){
-		prev.appendChild(document.createElement("br"));
-		prev.innerHTML += msg;
-
-	}
-	else{
-		var e = document.createElement('div');
-		e.setAttribute("class", type)
-		e.innerHTML = msg;
-		chat.appendChild(e);
-	}
-	chat.scrollTop = chat.scrollHeight;
-}
-/*
-function addGroup(group){
-	var group_node = document.createElement('tr');
-	group_node.setAttribute('data-id', group.id);
-	group_node.setAttribute('style', 'opacity: 0');
-	group_node.innerHTML = 	'<td style="width:60%">'+group.topic+'</td> \
-							<td>20 mins ago</td> \
-							<td>'+group.users+'</td>';
-	group_list.appendChild(group_node);
-	setTimeout(function(){group_node.setAttribute('style', 'opacity: 1')},50);
-	return group_node;
-}*/
-
-function updateUserList(users){
-	user_list.innerHTML = '';
-	var sorted_list = [];
-	for(var user in users){
-		sorted_list.push(users[user]);
-	}
-	sorted_list.sort();
-
-	sorted_list.forEach(function(username){
-		var e = document.createElement('div');
-
-		var ico = document.createElement('span');
-		ico.setAttribute('class', 'ico');
-
-		var user = document.createElement('span');
-		user.setAttribute('class', 'user');
-		user.innerHTML = username;
-
-		e.appendChild(ico);
-		e.appendChild(user);
-
-		user_list.appendChild(e);
-	});
-}
-
-var currPage;
-
-function showElement(e){
-	if(e.style.display == 'none'){
-		e.style.display = (e._display || 'block');
-	} 
-}
-
-function hideElement(e){
-	e._display = e.style.display; 
-	e.style.display = 'none'
-}
-
-
-var backContainer = _el("backContainer");
-var backButton = _el("backButton");
-var groupNameTitle = _el("groupName");
 var groupName = '';
-/*
-function showPage(e){
-	hideElement(currPage);
-	e.show();
-	if(e != welcomePage){
-		backContainer.show();
-	}
-	else{
-		backContainer.hide();
-	}
-
-	if(currPage == joinPage){
-		group_list.innerHTML = '<tr class="dummy-row"></tr>';
-		clearTimeout(scanTimer);
-		Scanner.stop();
-		joinSubmit.disabled = true;
-	}
-	else if(currPage == chatPage){
-		client.close();
-	}
-	currPage = e;
-
-	if(currPage == chatPage){
-		hideElement(backContainer);
-		groupNameTitle.innerHTML = groupName;
-		groupTab.show();
-	}
-}
-*/
-
-groupTabClose.addEventListener('click', function(){
-
-});
-
-
-//currPage = welcomePage;
+var Groups = {};
 
 TitleBar = new (View.extend({
 	id: 'titlebar',
 	events: {
-		'click #backButton' : 'onBack'
+		'click #backButton' : 'onBack',
+		'click #windowCloseButton' : 'closeWindow',
+		'click #toolsButton': 'showTools'
 	},
 
 	init: function(){
@@ -216,9 +39,120 @@ TitleBar = new (View.extend({
 		this.back = this.el.find('#backContainer');
 	},
 
+	setUser: function(name){
+		this.el.find('#titleProfile').innerHTML = name;
+	},
+
 	onBack: function(){
 		PageManager.show('welcome');
+	},
+
+	closeWindow: function(){
+		Win.close(true);
+	},
+
+	showTools: function(){
+		Win.showDevTools();
 	}
+
+}))();
+
+
+WelcomePage = new (View.extend({
+	id: 'welcomeContainer',
+
+	events: {
+		'click #createButton': function(){
+			PageManager.show('create');
+		},
+		'click #joinButton': function(){
+			PageManager.show('join');
+		},
+
+		'input #createProfileText': 'onProfileInput',
+		'click #createProfile': 'onProfileSubmit'
+	},
+
+	init: function(){
+		this._super();
+
+		this.buttons = this.el.find('#welcomeButtons');
+		this.profile = this.el.find('#welcomeProfile');
+		this.profileUser = this.el.find('#createProfileText');
+		this.profileUserSubmit = this.el.find('#createProfile');
+
+		if(!_config || !('username' in _config) || _config['username'].trim() == ''){
+			// Username not created.
+			// Display Profile create page.
+			this.buttons.hide();
+			this.profile.show();
+		}
+		else
+			titleProfile.innerHTML = _config['username'];
+	},
+
+	onProfileInput: function(){
+		if(this.profileUser.value.trim() != '')
+			this.profileUserSubmit.disabled = false;
+		else
+			this.profileUserSubmit.disabled = true;
+	},
+
+	onProfileSubmit: function(){
+		_config =  _config || {};
+		_config['username'] = this.profileUser.value.trim();
+		Config.write(_config);
+
+		this.profile.hide();
+		this.buttons.show();
+		titleProfile.innerHTML = _config['username'];
+	},
+
+	render: function(){
+		TitleBar.back.hide();
+	},
+
+	post_render:function(){
+		TitleBar.back.show();
+	}
+
+}))();
+
+
+CreatePage = new (View.extend({
+	id: 'createContainer',
+	events: {
+		'click #createSubmit': 'onSubmit',
+		'input #createName': 'onInput'
+	},
+
+	init: function(){
+		this._super();
+		this.name = this.el.find("#createName");
+		this.topic = this.el.find('#createTopic');
+		this.submit = this.el.find('#createSubmit');
+	},
+
+	render: function(){
+		this.name.value = '';
+		this.topic.value = '';
+	},
+
+	onSubmit: function(){
+		GroupPage.name = this.name.value;
+		GroupPage.topic = this.topic.value;
+		client = Server.start(this.name.value, _config['username'], this.topic.value);
+		PageManager.show('group');
+		GroupPage.chat.addStatusMessage("Server Listening...", "admin");
+	},
+
+	onInput: function(){
+		if(this.name.value.trim() != '')
+			this.submit.disabled = false;
+		else
+			this.submit.disabled = true;
+	}
+
 }))();
 
 JoinPage = new (View.extend({
@@ -243,14 +177,16 @@ JoinPage = new (View.extend({
 				this.selected = null;
 			},
 			clear: function() { 
-				this.el.innerHTML = '<tr class="dummy-row"></tr>';
+				this.el.innerHTML = '';
 			},
 			add: function(group){
+				console.log(group);
 				var newGroup = document.createElement('tr');
 				newGroup.setAttribute('data-id', group.id);
 				newGroup.style.opacity = 0;
-				newGroup.innerHTML = 	'<td style="width:60%">'+group.topic+'</td> \
-										<td>20 mins ago</td> \
+				newGroup.innerHTML = 	'<td style="width:40%">'+group.name+'</td> \
+										<td>'+group.topic+'</td> \
+										<td>'+timeSince(new Date(group.created))+' ago</td> \
 										<td>'+group.users+'</td>';
 				this.el.appendChild(newGroup);
 				setTimeout(function(){ newGroup.style.opacity = 1 },10);
@@ -269,10 +205,11 @@ JoinPage = new (View.extend({
 	render: function(){
 		this.groupList.clear();
 		joinSubmit.disabled = true;
+		JoinPage.scan();
 	},
 	post_render:function(){
 		clearTimeout(this.scanTimer);
-		Scanner.stop();
+		Scanner.stopScan();
 	},
 
 	scan: function(){
@@ -294,27 +231,251 @@ JoinPage = new (View.extend({
 			self.loader.hide();
 
 			if(!Object.keys(Scanner.groups).length) self.noneFound.show();
-			Scanner.stop();
+			Scanner.stopScan();
 		}, 5000);
 	},
 
 	join: function(){
 		//console.log('clicked');
 		clearTimeout(this.scanTimer);
-		Scanner.stop();
+		Scanner.stopScan();
 
-		
 		var grp = Scanner.groups[this.groupList.selected.getAttribute("data-id")];
 		if(!grp) return false;
 
-		groupName = grp.topic;
+		GroupPage.name = grp.name;
+		GroupPage.topic = grp.topic;
 
 		client = new Client();
-		client.name = config_data['username'];
+		client.name = _config['username'];
 		client.connect(grp.address, grp.port);
 		PageManager.show('group');
 
 	}
+}))();
+
+GroupTab = new (View.extend({
+	id: 'groupTab',
+
+	events: {
+		'click #groupTabClose': 'onClose'
+	},
+
+	init: function(){
+		this._super();
+		this.title ='';
+	},
+
+	render: function(){
+		this.el.find('#groupName').innerHTML = this.title;
+	},
+
+	post_render: function(){
+		this.el.find('#groupName').innerHTML = ' ';
+		this.title = '';
+	},
+
+	onClose: function(){
+		PageManager.show('welcome');
+		this.hide();
+	},
+
+}))();
+
+
+var UserListView = new (View.extend({
+	id: 'chatUsers',
+
+	init: function(_this){
+		this._super();
+	},
+
+	render: function(){
+		this.el.innerHTML = '';
+	},
+
+	update: function(users){
+		this.el.innerHTML = '';
+		var sorted_list = [];
+		for(var user in users){ sorted_list.push(users[user]) }
+		sorted_list.sort();
+
+		var self = this;
+		sorted_list.forEach(function(username){
+			var e = document.createElement('div');
+
+			var e_ico = document.createElement('span');
+			e_ico.setAttribute('class', 'ico');
+
+			var e_user = document.createElement('span');
+			e_user.setAttribute('class', 'user');
+			e_user.innerHTML = username;
+
+			e.appendChild(e_ico);
+			e.appendChild(e_user);
+
+			self.el.appendChild(e);
+		});		
+	}
+}))();
+
+var ChatView = new (View.extend({
+	id: 'chatWrapper',
+
+	events:{
+		'click #chatSubmit': 'onChatSubmit',
+		'keyup #chatInput': function(e){
+			if(e.keyCode == 13) this.chatSubmit.click();
+		},
+		'input #chatInput': 'onChatInput'
+	},
+
+	init: function(){
+		this._super();
+		this.messages = this.el.find('#chatContainer');
+		this.textInput = this.el.find('#chatInput');
+		this.chatSubmit = this.el.find('#chatSubmit');
+		this.chatSubmit.disabled = true;
+		//console.log(this);
+	},
+
+	render: function(){
+		this.messages.innerHTML = '';
+	},
+
+	addStatusMessage: function(msg, type){
+		type = type || ''
+		var prev = this.messages.lastChild;
+		console.log(prev);
+		
+		if(prev && prev.getAttribute("class") == type){
+			prev.appendChild(document.createElement("br"));
+			prev.innerHTML += msg;
+		}
+		else{
+			var e = document.createElement('div');
+			e.setAttribute("class", type)
+			e.innerHTML = msg;
+			this.messages.appendChild(e);
+		}
+		this.messages.scrollTop = this.messages.scrollHeight;
+		
+	},
+
+	addUserMessage: function(user, msg, type){
+		var prev = this.messages.lastChild;
+		var msg_time;
+		if(type == 'self')
+			msg_time = new Date();
+		else
+			msg_time = new Date(msg.time);
+
+		msg_time = msg_time.getHours() + ':' + msg_time.getMinutes();
+
+		if(prev && prev.hasAttribute("data-id") && prev.getAttribute("data-id") == user.id){
+			var body = prev.getElementsByClassName('msg-body')[0];
+			body.appendChild(document.createElement("br"));
+			body.appendChild(document.createTextNode(msg.body));
+			prev.getElementsByClassName('msg-time')[0].innerHTML = msg_time;		
+		}
+		else{
+			var msg_node = document.createElement('div');
+			msg_node.setAttribute('data-id', user.id);
+
+			msg_node.innerHTML = '<div class="msg-text col"> \
+									<span class="msg-user">'+user.name+'</span> \
+									<span class="msg-body">'+msg.body+'</span> \
+									<span class="msg-time">'+msg_time+'</span> \
+								</div>'
+			if(type == 'self')
+				msg_node.setAttribute('class', 'msg row msg-self');
+			else
+				msg_node.setAttribute('class', 'msg row');
+			/*else{*/
+			msg_node.innerHTML += 	'<div class="msg-meta col"> \
+										<div class="msg-ico"></div> \
+									</div>';
+			
+				
+			this.messages.appendChild(msg_node);
+		}
+		this.messages.scrollTop = this.messages.scrollHeight;
+	},
+
+	onChatInput: function(){
+		if(this.textInput.value.trim() != '')
+			this.chatSubmit.disabled = false;
+		else
+			this.chatSubmit.disabled = true;	
+	},
+
+	onChatSubmit: function(){
+		var message = this.textInput.value;
+		this.textInput.value = '';
+		this.chatSubmit.disabled = true;
+/*
+		var command = inputText.match(/\/(\w+)\s?(.*)/);
+		if(command){
+			if(command[1] == 'serve' || command[1] == 's'){
+				Server.server.listen(7000);
+				addChat("Server Listening...", "admin");
+			}
+			else 
+			if(command[1] == 'connect' || command[1] == 'c'){
+				client = new Client();
+				client.connect('localhost', 7000);
+			}
+			else{
+				client.send(command[1], command[2]);
+			}
+		}
+*/
+		client.send("m", message);
+		this.addUserMessage(client, {body:message, time:'0'}, 'self');
+	}
+}))();
+
+GroupPage = new (View.extend({
+	id: 'groupContainer',
+
+	name: null,
+	topic: null,
+
+	events: {
+	},
+
+	init: function(){
+		this._super();
+
+		this.topicEl = this.el.find("#groupTopic");
+		this.userEl = this.el.find("#groupUserCount");
+		this.users = UserListView;
+		this.chat = ChatView;
+	},
+
+	render: function(){
+		TitleBar.back.hide();
+		GroupTab.title = this.name;
+		GroupTab.show();
+		this.topicEl.innerHTML = this.topic;
+		this.chat.show();
+	},
+
+	post_render: function(){
+		client.close();
+		if(Scanner.isBroadcasting){
+			Scanner.stopBroadcast();
+			Server.stop();		
+			console.log('stopped broadcasting');	
+		}
+		GroupTab.hide();
+	},
+
+	updateUsers: function(users){
+		this.users.update(users);
+		this.userEl.innerHTML = Object.keys(users).length;
+	}
+
 }))();
 
 
@@ -324,32 +485,13 @@ PageManager = new (View.extend({
 	init: function(){
 		this._super();
 
-		this.welcome = new View({
-			id: 'welcomeContainer',
-			render: function(){
-				TitleBar.back.hide();
-			},
-			post_render:function(){
-				TitleBar.back.show();
-			}
-		});
+		this.welcome = WelcomePage;
 
-		this.create = new View({id: 'createContainer'});
+		this.create = CreatePage;
 
 		this.join = JoinPage;
 
-		this.group = new View({
-			id: 'groupContainer',
-			render: function(){
-				TitleBar.back.hide();
-				groupNameTitle.innerHTML = groupName;
-				groupTab.show();
-
-			},
-			post_render: function(){
-				client.close();
-			}
-		});
+		this.group = GroupPage;
 
 		this.current = this.welcome;
 	},
@@ -365,72 +507,38 @@ PageManager = new (View.extend({
 
 
 
-
-var createButton = _el("createButton");
-createButton.addEventListener("click", function(){
-	var topicInput = document.getElementById("createTopic");
-	var createSubmit = document.getElementById("createSubmit");
-	topicInput.addEventListener("input", function(){
-		if(topicInput.value.trim() != ''){
-			createSubmit.disabled = false;
-		}
-		else{
-			createSubmit.disabled = true;
-		}
-	});
-	PageManager.show('create');
-});
-
 var client = new Client();
 client.on('connect', function(){
-	addChat("Connecting to Server...", "log");
+	GroupPage.chat.addStatusMessage("Connecting to Server...", "log");
 });
 
 client.on('connected', function(){
-	addChat("Connected as "+client.name, "log");
+	GroupPage.chat.addStatusMessage("Connected as "+client.name, "log");
 });
 
 client.on('disconnect', function(){
-	addChat("Disconnected from server.", "log");
+	GroupPage.chat.addStatusMessage("Disconnected from server.", "log");
 });
 
 client.on('server', function(msg){
 	if(msg.type == 'nick'){
-		addChat("Nick changed from "+ msg.data, "server");
+		GroupPage.chat.addStatusMessage("Nick changed from "+ msg.data, "server");
 	}
 	else if(msg.type == 'user_new'){
-		addChat(msg.data + " has joined.", "server");
+		GroupPage.chat.addStatusMessage(msg.data + " has joined.", "server");
 	}
 	else if(msg.type == 'user_quit'){
-		addChat('<strong>' + msg.data + '</strong>' + " has left.", "server");
+		GroupPage.chat.addStatusMessage('<strong>' + msg.data + '</strong>' + " has left.", "server");
 	}
 	else if(msg.type == 'user_msg'){
-		createMessage(msg.data.user, msg.data.msg)
+		GroupPage.chat.addUserMessage(msg.data.user, msg.data.msg)
 	}
 });
 
 client.on('user_update', function(){
-	updateUserList(client.users);
+	GroupPage.updateUsers(client.users);
 });
 
-_el("createSubmit").addEventListener("click", function(e){
-	
-	/*
-	Server.server.listen(0);
-	Server.topic = document.getElementById("createTopic").value;
-	listening = true;
-
-	client = new Client();
-	client.name = config_data['username'];
-	client.connect('localhost', Server.server.address().port);
-	Server.setOwner({name:client.name});
-	Scanner.broadcast(Server);
-	*/
-	groupName = _el('createTopic').value;
-	client = Server.start(groupName, config_data['username']);
-	PageManager.show('group');
-	addChat("Server Listening...", "admin");
-});
 
 /*
 var joinSubmit = _el("joinSubmit");
@@ -439,7 +547,7 @@ var joinLoader = _el("joinLoader");
 var joinEmpty = _el("joinEmpty");
 var scanTimer;
 */
-var J = null;
+
 /*
 function scanGroups(){
 	hideElement(joinEmpty);
@@ -464,11 +572,12 @@ function scanGroups(){
 	}, 5000);
 }
 */
-
+/*
 document.getElementById("joinButton").addEventListener("click", function(){
 	JoinPage.scan();
 	PageManager.show('join');
 });
+*/
 /*
 refreshButton.addEventListener("click", function(){
 	JoinPage.groupList.clear();
@@ -490,7 +599,7 @@ joinSubmit.addEventListener("click", function(){
 });
 */
 
-
+/*
 var chatForm = document.forms[0];
 chatForm.addEventListener("submit", function(e){
 
@@ -504,12 +613,11 @@ chatForm.addEventListener("submit", function(e){
 	var command = inputText.match(/\/(\w+)\s?(.*)/);
 
 	if(command){
-		/*
 		if(command[1] == 'serve' || command[1] == 's'){
 			Server.server.listen(7000);
 			addChat("Server Listening...", "admin");
 		}
-		else */
+		else 
 		if(command[1] == 'connect' || command[1] == 'c'){
 			client = new Client();
 			client.connect('localhost', 7000);
@@ -524,3 +632,4 @@ chatForm.addEventListener("submit", function(e){
 	}
 
 });
+*/
