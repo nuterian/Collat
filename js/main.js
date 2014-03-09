@@ -19,7 +19,15 @@ Config.on('err', function(e){
 	return;
 });
 var _config = Config.read();
-onload = function() {  Win.show(); }
+/*
+window.addEventListener('DOMContentLoaded', function(){
+	Win.show();
+});
+*/
+
+onload = function(){
+	Win.show();
+}
 
 
 
@@ -297,19 +305,27 @@ var UserListView = new (View.extend({
 	update: function(users){
 		this.el.innerHTML = '';
 		var sorted_list = [];
-		for(var user in users){ sorted_list.push(users[user]) }
+		for(var user in users){ 
+			sorted_list.push(users[user].r + '\n' + users[user].n + '\n' + user); 
+		}
 		sorted_list.sort();
 
 		var self = this;
-		sorted_list.forEach(function(username){
-			var e = document.createElement('div');
+		sorted_list.forEach(function(user){
+			var userInfo = user.split('\n');
 
+			var e = document.createElement('div');
+			if(userInfo[0] == '0')
+				e.className = 'owner';
+
+			e.setAttribute('data-id', userInfo[2]);
+			
 			var e_ico = document.createElement('span');
 			e_ico.setAttribute('class', 'ico');
 
 			var e_user = document.createElement('span');
 			e_user.setAttribute('class', 'user');
-			e_user.innerHTML = username;
+			e_user.innerHTML = userInfo[1];
 
 			e.appendChild(e_ico);
 			e.appendChild(e_user);
@@ -346,7 +362,6 @@ var ChatView = new (View.extend({
 	addStatusMessage: function(msg, type){
 		type = type || ''
 		var prev = this.messages.lastChild;
-		console.log(prev);
 		
 		if(prev && prev.getAttribute("class") == type){
 			prev.appendChild(document.createElement("br"));
