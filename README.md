@@ -1,4 +1,4 @@
 Collat
 ======
 
-A P2P chat application based on node-webkit
+A P2P chat app based on node-webkit
